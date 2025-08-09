@@ -3,7 +3,7 @@ if game.PlaceId ~= 893973440 then
 	return
 end
 if game.PlaceId == 893973440 then
-local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+local Rayfield = loadstring(game:HttpGet('https://raw.githubusercontent.com/SiriusSoftwareLtd/Rayfield/main/source.lua'))()
 local Window = Rayfield:CreateWindow({
    Name = "DIRSBLOX FTF hub",
    Icon = 136729063013827, -- Icon in Topbar. Can use Lucide Icons (string) or Roblox Image (number). 0 to use no icon (default).
