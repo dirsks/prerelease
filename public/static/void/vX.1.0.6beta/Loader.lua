@@ -2,7 +2,7 @@ if game.PlaceId ~= 893973440 then
 	warn("Please play FLEE THE FACILITY to the script hub work.")
 	return
 end
-if game.PlaceId == 893973440 then
+
 local Rayfield = loadstring(game:HttpGet('https://raw.githubusercontent.com/SiriusSoftwareLtd/Rayfield/main/source.lua'))()
 local Window = Rayfield:CreateWindow({
    Name = "DIRSBLOX FTF hub",
@@ -46,81 +46,81 @@ local t1 = Window:CreateTab("⚙️ | Basic Hacks", 4483362458) -- Title, Image
 local t3 = Window:CreateTab("🥽 | ESP", 4483362458) -- Title, Image
 local t4 = Window:CreateTab("👨‍💻 | Exploit", 4483362458) -- Title, Image
 
-local Section = t1:CreateSection("Walk speed")
-local Section = t1:CreateSection("Jump power")
-local Section = t1:CreateSection("World gravity")
-local Section = t1:CreateSection("Inf jump")
+local sectionWalkSpeed = t1:CreateSection("Walk speed")
+local sectionJumpPower = t1:CreateSection("Jump power")
+local sectionGravity = t1:CreateSection("World gravity")
+local sectionInfJump = t1:CreateSection("Inf jump")
 --[[ t2
 local Section = t2:CreateSection("STUFF IN BETA!")
 ]]
 -- t3
-local Section = t4:CreateSection("BETA - FTF Exploit")
+local sectionExp = t4:CreateSection("BETA - FTF Exploit")
 
 local player = game.Players.LocalPlayer
-local character = player.Character
-local humanoid = character.Humanoid
-
+local character = player.Character or player.CharacterAdded:Wait()
+local humanoid = character:WaitForChild("Humanoid")
 -- ESP Toggles
-local Toggle = t3:CreateToggle({
-   Name = "Esp PLAYERS",
-   CurrentValue = false,
-   Flag = "Toggle1",
-   Callback = function(Value)
-       function getBeast()
-           for _, plr in pairs(game.Players:GetPlayers()) do
-               if plr and plr.TempPlayerStatsModule:FindFirstChild("IsBeast") then
-                   if plr.TempPlayerStatsModule:FindFirstChild("IsBeast").Value then
-                       return plr
-                   end
-               end
-           end
-           return nil
-       end
-       local player = game.Players:GetChildren()
-       for i = 1, #player do
-           if player[i] ~= game.Players.LocalPlayer and player[i].Character ~= nil then
-               local character = player[i].Character
-               if character:FindFirstChild("Highlight") and not playertoggle then
-                   character.Highlight:Remove()
-               end
-               if Value and not character:FindFirstChild("Highlight") then
-                   local a = Instance.new("Highlight", character)
-                   a.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
-                   a.FillColor = Color3.fromRGB(0,255,0)
-                   a.OutlineColor = Color3.fromRGB(127,255,127)
-                   spawn(function()
-                       repeat
-                           wait(0.1)
-                           if player[i] == getBeast() then
-                               a.FillColor = Color3.fromRGB(255,0,0)
-                               a.OutlineColor = Color3.fromRGB(255,127,127)
-                           else
-                               a.FillColor = Color3.fromRGB(0,255,0)
-                               a.OutlineColor = Color3.fromRGB(127,255,127)
-                           end
-                       until character == nil or a == nil
-                   end)
-               end
-           end
-       end
-   end  -- ← fecha a função
-})      -- ← fecha a tabela e a chamada
-local Toggle = t3:CreateToggle({
+local function getBeast()
+    for _, plr in pairs(game.Players:GetPlayers()) do
+        if plr and plr:FindFirstChild("TempPlayerStatsModule") then
+            local stat = plr.TempPlayerStatsModule:FindFirstChild("IsBeast")
+            if stat and stat.Value == true then
+                return plr
+            end
+        end
+    end
+    return nil
+end
+
+t3:CreateToggle({
+    Name = "Esp PLAYERS",
+    CurrentValue = false,
+    Flag = "TogglePlayersESP",
+    Callback = function(Value)
+        local playersList = game.Players:GetPlayers()
+        for _, plr in pairs(playersList) do
+            if plr ~= player and plr.Character then
+                local char = plr.Character
+                local highlight = char:FindFirstChild("Highlight")
+                if highlight and not Value then
+                    highlight:Destroy()
+                end
+                if Value and not highlight then
+                    local a = Instance.new("Highlight", char)
+                    a.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
+                    a.FillColor = Color3.fromRGB(0, 255, 0)
+                    a.OutlineColor = Color3.fromRGB(127, 255, 127)
+                    spawn(function()
+                        repeat
+                            wait(0.1)
+                            if plr == getBeast() then
+                                a.FillColor = Color3.fromRGB(255, 0, 0)
+                                a.OutlineColor = Color3.fromRGB(255, 127, 127)
+                            else
+                                a.FillColor = Color3.fromRGB(0, 255, 0)
+                                a.OutlineColor = Color3.fromRGB(127, 255, 127)
+                            end
+                        until not char or not a or not a.Parent
+                    end)
+                end
+            end
+        end
+    end
+})
+-- ESP FreezePods
+t3:CreateToggle({
     Name = "ESP Pod",
     CurrentValue = false,
-    Flag = "Toggle3",
+    Flag = "TogglePodsESP",
     Callback = function(Value)
         local pods = workspace:GetDescendants()
-
-        for i = 1, #pods do
-            if pods[i].Name == "FreezePod" then
-                local pod = pods[i]
-
-                if pod:FindFirstChild("Highlight") and not Value then
-                    pod.Highlight:Remove()
+        for _, pod in pairs(pods) do
+            if pod.Name == "FreezePod" then
+                local highlight = pod:FindFirstChild("Highlight")
+                if highlight and not Value then
+                    highlight:Destroy()
                 end
-
-                if Value and not pod:FindFirstChild("Highlight") then
+                if Value and not highlight then
                     local a = Instance.new("Highlight", pod)
                     a.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
                     a.FillColor = Color3.fromRGB(0, 255, 255)
@@ -130,22 +130,21 @@ local Toggle = t3:CreateToggle({
         end
     end,
 })
-local Toggle = t3:CreateToggle({
+
+-- ESP ExitDoors
+t3:CreateToggle({
     Name = "ESP Exit Doors",
     CurrentValue = false,
-    Flag = "Toggle2",
+    Flag = "ToggleExitDoorsESP",
     Callback = function(Value)
         local doors = workspace:GetDescendants()
-
-        for i = 1, #portas do
-            if doors[i].Name == "ExitDoor" then
-                local door = doors[i]
-
-                if door:FindFirstChild("Highlight") and not Value then
-                    door.Highlight:Remove()
+        for _, door in pairs(doors) do
+            if door.Name == "ExitDoor" then
+                local highlight = door:FindFirstChild("Highlight")
+                if highlight and not Value then
+                    highlight:Destroy()
                 end
-
-                if Value and not soor:FindFirstChild("Highlight") then
+                if Value and not highlight then
                     local a = Instance.new("Highlight", door)
                     a.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
                     a.FillColor = Color3.fromRGB(255, 255, 0)
@@ -155,22 +154,21 @@ local Toggle = t3:CreateToggle({
         end
     end,
 })
-local Toggle = t3:CreateToggle({
+
+-- ESP PCs
+t3:CreateToggle({
     Name = "ESP PCs",
     CurrentValue = false,
-    Flag = "Toggle1",
+    Flag = "TogglePCsESP",
     Callback = function(Value)
         local pcs = workspace:GetDescendants()
-
-        for i = 1, #pcs do
-            if pcs[i].Name == "ComputerTable" then
-                local pc = pcs[i]
-
-                if pc:FindFirstChild("Highlight") and not Value then
-                    pc.Highlight:Remove()
+        for _, pc in pairs(pcs) do
+            if pc.Name == "ComputerTable" then
+                local highlight = pc:FindFirstChild("Highlight")
+                if highlight and not Value then
+                    highlight:Destroy()
                 end
-
-                if Value and not pc:FindFirstChild("Highlight") then
+                if Value and not highlight then
                     local a = Instance.new("Highlight", pc)
                     a.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
                     a.FillColor = Color3.fromRGB(0, 0, 255)
@@ -184,7 +182,7 @@ local Toggle = t3:CreateToggle({
 local noclip = false
 local char = character
 
-local Toggle = Tab:CreateToggle({
+t1:CreateToggle({
     Name = "Noclip",
     CurrentValue = false,
     Flag = "ToggleNoclip",
@@ -196,95 +194,107 @@ local Toggle = Tab:CreateToggle({
 game:GetService("RunService").Stepped:Connect(function()
     if noclip and char then
         for _, part in pairs(char:GetDescendants()) do
-            if part:IsA("BasePart") and part.CanCollide == true then
+            if part:IsA("BasePart") and part.CanCollide then
                 part.CanCollide = false
             end
         end
     end
 end)
-local Slider = t1:CreateSlider({
-   Name = "WalkSpeed",
-   Range = {0, 50},
-   Increment = 10,
-   Suffix = "WalkSpeed",
-   CurrentValue = 16,
-   Flag = "Slider1", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
-   Callback = function(Value)
-		humanoid.WalkSpeed = Value
-   end,
+t1:CreateSlider({
+    Name = "WalkSpeed",
+    Range = {0, 50},
+    Increment = 1,
+    Suffix = "WalkSpeed",
+    CurrentValue = 16,
+    Flag = "SliderWalkSpeed",
+    Callback = function(Value)
+        if humanoid then
+            humanoid.WalkSpeed = Value
+        end
+    end,
 })
-local Slider = t1:CreateSlider({
-   Name = "JumpPower",
-   Range = {0, 100},
-   Increment = 10,
-   Suffix = "WalkSpeed",
-   CurrentValue = 10,
-   Flag = "Slider2", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
-   Callback = function(Value)
-		humanoid.JumpPower = Value
-   end,
+
+t1:CreateSlider({
+    Name = "JumpPower",
+    Range = {0, 100},
+    Increment = 1,
+    Suffix = "JumpPower",
+    CurrentValue = 50,
+    Flag = "SliderJumpPower",
+    Callback = function(Value)
+        if humanoid then
+            humanoid.JumpPower = Value
+        end
+    end,
 })
-local Slider = t1:CreateSlider({
-   Name = "Gravity",
-   Range = {0, 50},
-   Increment = 10,
-   Suffix = "WalkSpeed",
-   CurrentValue = 198.6,
-   Flag = "Slider3", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
-   Callback = function(Value)
-		workspace.Gravity = Value
-   end,
+
+t1:CreateSlider({
+    Name = "Gravity",
+    Range = {0, 500},
+    Increment = 10,
+    Suffix = "Gravity",
+    CurrentValue = workspace.Gravity,
+    Flag = "SliderGravity",
+    Callback = function(Value)
+        workspace.Gravity = Value
+    end,
 })
-local Button = t1:CreateButton({
-   Name = "Reset Gravity",
-   Callback = function()
-			workspace.Gravity = 198.6
-   end,
+t1:CreateButton({
+    Name = "Reset Gravity",
+    Callback = function()
+        workspace.Gravity = 196.2
+    end,
 })
-local Button = t1:CreateButton({
-   Name = "Reset Speed",
-   Callback = function()
-			humanoid.WalkSpeed = 16
-   end,
+
+t1:CreateButton({
+    Name = "Reset Speed",
+    Callback = function()
+        if humanoid then
+            humanoid.WalkSpeed = 16
+        end
+    end,
 })
-local Button = t1:CreateButton({
-   Name = "Reset JP",
-   Callback = function()
-			humanoid.JumpPower = 50
-   end,
+
+t1:CreateButton({
+    Name = "Reset JP",
+    Callback = function()
+        if humanoid then
+            humanoid.JumpPower = 50
+        end
+    end,
 })
 -- FTF
-local Button = t1:CreateButton({
-   Name = "Confuse Beast - USE BEFORE GET ROPED",
-   Callback = function()
-	local targetCFrame = CFrame.new(111.20410919189453, 8.207777976989746, -413.4593811035156)
-			if character and character.PrimaryPart then
-				for i = 1, 240 do
-				character:SetPrimaryPartCFrame(targetCFrame)
-				task.wait(0.05)
-				end
-			end
-   end,
+t1:CreateButton({
+    Name = "Confuse Beast - USE BEFORE GET ROPED",
+    Callback = function()
+        local targetCFrame = CFrame.new(111.204, 8.207, -413.459)
+        if character and character.PrimaryPart then
+            for i = 1, 240 do
+                character:SetPrimaryPartCFrame(targetCFrame)
+                task.wait(0.05)
+            end
+        end
+    end,
 })
-local Button = t4:CreateButton({
-   Name = "Unfreeze - LAST RESORT, USE IN FREEZER",
-   Callback = function()
-			Rayfield:Notify({
-					Title = "Alert",
-					Content = "You can no longer hack computers! You can escape",
-					Duration = 6.5,
-					Image = "rewind",
-			})
-			if character then
-				local humanoid = character:FindFirstChildOfClass("Humanoid")
-				if humanoid then
-					humanoid.Health = 0
-				end
-			end
-   end,
+t4:CreateButton({
+    Name = "Unfreeze - LAST RESORT, USE IN FREEZER",
+    Callback = function()
+        Rayfield:Notify({
+            Title = "Alert",
+            Content = "You can no longer hack computers! You can escape",
+            Duration = 6.5,
+            Image = "rewind",
+        })
+        if character then
+            local humanoid = character:FindFirstChildOfClass("Humanoid")
+            if humanoid then
+                humanoid.Health = 0
+            end
+        end
+    end,
 })
-local Section = t4:CreateSection("Teleports")
-local Button = t4:CreateButton({
+t4:CreateSection("Teleports")
+t4:CreateButton({
    Name = "TP To Map",
    Callback = function()
 			local function findOBSpawnPadInParent()
@@ -302,23 +312,78 @@ local Button = t4:CreateButton({
 			return nil
    end,
 })
-local Button = t4:CreateButton({
-   Name = "TP to random PC",
-   Callback = function()
-				local parts = {}
-				for _, obj in pairs(parent:GetChildren()) do
-				if obj.Name == name and obj:IsA("Model") then
-						table.insert(parts, obj)
-				end
-				if #obj:GetChildren() > 0 then
-					local foundParts = findAllPartsByName(obj, name)
-					for _, found in pairs(foundParts) do
-					table.insert(parts, found)
-				end
-			end
-		end
-    return parts
+-- Função recursiva para encontrar todos os modelos com um dado nome
+local function findAllModelsByName(parent, name)
+    local models = {}
+    for _, obj in pairs(parent:GetChildren()) do
+        if obj.Name == name and obj:IsA("Model") then
+            table.insert(models, obj)
+        end
+        if #obj:GetChildren() > 0 then
+            local foundModels = findAllModelsByName(obj, name)
+            for _, found in pairs(foundModels) do
+                table.insert(models, found)
+            end
+        end
+    end
+    return models
 end
+
+-- Lista para evitar repetir computadores recentes
+local recentComputers = {}
+
+-- Função que retorna um computador aleatório diferente dos recentes
+local function getRandomComputer()
+    local computerModels = findAllModelsByName(workspace, "ComputerTable")
+    if #computerModels == 0 then
+        return nil
+    end
+
+    local validComputers = {}
+    for _, computer in pairs(computerModels) do
+        if not table.find(recentComputers, computer) then
+            table.insert(validComputers, computer)
+        end
+    end
+
+    if #validComputers == 0 then
+        -- Se todos foram usados recentemente, reseta a lista para permitir repetir
+        recentComputers = {}
+        validComputers = computerModels
+    end
+
+    local randomIndex = math.random(1, #validComputers)
+    return validComputers[randomIndex]
+end
+
+-- Botão na aba Exploit (t4) para teleportar para PC aleatório
+t4:CreateButton({
+    Name = "TP to random PC",
+    Callback = function()
+        local player = game.Players.LocalPlayer
+        local character = player.Character or player.CharacterAdded:Wait()
+        local rootPart = character:WaitForChild("HumanoidRootPart")
+
+        local chosenComputer = getRandomComputer()
+
+        if chosenComputer and chosenComputer.PrimaryPart then
+            local targetPos = chosenComputer.PrimaryPart.Position + Vector3.new(0, 5, 0)
+            rootPart.CFrame = CFrame.new(targetPos)
+
+            table.insert(recentComputers, chosenComputer)
+            if #recentComputers > 3 then
+                table.remove(recentComputers, 1)
+            end
+        else
+            Rayfield:Notify({
+                Title = "TP to PC",
+                Content = "No computers found to teleport!",
+                Duration = 4,
+                Image = "error",
+            })
+        end
+    end,
+})
 
 local recentComputers = {}
 
@@ -362,30 +427,34 @@ if chosenComputer and chosenComputer.PrimaryPart then
 	end
    end,
 })
-local Button = Tab:CreateButton({
-   Name = "Anti PC Error",
-   Callback = function()
-			Name = "Anti PC Error - Click to disable"
-			_G.AutomaticHackingEnabled = not _G.AutomaticHackingEnabled
+t4:CreateButton({
+    Name = "Anti PC Error",
+    Callback = function()
+        _G.AutomaticHackingEnabled = not _G.AutomaticHackingEnabled
 
-			Rayfield:Notify({
-					Title = "Anti-PC-Error",
-					Content = _G.AutomaticHackingEnabled and "Enabled." or "Disabled.",
-					Duration = 6.5,
-					Image = 4483362458,
-			})
+        Rayfield:Notify({
+            Title = "Anti-PC-Error",
+            Content = _G.AutomaticHackingEnabled and "Enabled." or "Disabled.",
+            Duration = 6.5,
+            Image = 4483362458,
+        })
 
-			while _G.AutomaticHackingEnabled do
-			wait(0.25)
-				local args = {
-					"SetPlayerMinigameResult",
-					true
-				}
-				game:GetService("ReplicatedStorage"):WaitForChild("RemoteEvent"):FireServer(unpack(args))
-			end
-   end,
+        if _G.AutomaticHackingEnabled then
+            spawn(function()
+                while _G.AutomaticHackingEnabled do
+                    wait(0.25)
+                    local args = {
+                        "SetPlayerMinigameResult",
+                        true
+                    }
+                    game:GetService("ReplicatedStorage"):WaitForChild("RemoteEvent"):FireServer(unpack(args))
+                end
+            end)
+        end
+    end,
 })
-local Button = Tab:CreateButton({
+
+t4:CreateButton({
    Name = "TP to random Exit",
    Callback = function()
 			local function findAllModelsByName(parent, name)
@@ -420,11 +489,10 @@ local Button = Tab:CreateButton({
 			end
    end,
 })
-local Section = t4:CreateSection("Others")
-local Button = Tab:CreateButton({
+t4:CreateSection("Others")
+t4:CreateButton({
    Name = "Remote audio control",
    Callback = function()
 			loadstring(game:HttpGet("https://pastebin.com/raw/3dWP6BW4"))()
    end,
 })
-end
