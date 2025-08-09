@@ -41,7 +41,7 @@ local Window = Rayfield:CreateWindow({
    }
 })
 -- booting
-loadstring(game:HttpGet("https://pastebin.com/raw/JJh2xXEk"))()
+--loadstring(game:HttpGet("https://pastebin.com/raw/JJh2xXEk"))()
 local t1 = Window:CreateTab("⚙️ | Basic Hacks", 4483362458) -- Title, Image
 local t3 = Window:CreateTab("🥽 | ESP", 4483362458) -- Title, Image
 local t4 = Window:CreateTab("👨‍💻 | Exploit", 4483362458) -- Title, Image
