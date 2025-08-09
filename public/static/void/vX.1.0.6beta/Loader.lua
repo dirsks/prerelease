@@ -62,50 +62,49 @@ local humanoid = character.Humanoid
 
 -- ESP Toggles
 local Toggle = t3:CreateToggle({
-   Name = "Toggle Example",
+   Name = "Esp PLAYERS",
    CurrentValue = false,
    Flag = "Toggle1",
    Callback = function(Value)
-			function getBeast()
-    for _, plr in pairs(game.Players:GetPlayers()) do
-        if plr and plr.TempPlayerStatsModule:FindFirstChild("IsBeast") then
-            if plr.TempPlayerStatsModule:FindFirstChild("IsBeast").Value then
-                return plr
-            end
-        end
-    end
-    return nil
-			end
-   local player = game.Players:GetChildren()
-	for i=1, #player do
-		if player[i] ~= game.Players.LocalPlayer and player[i].Character ~= nil then
-		local character = player[i].Character
-		if character:findFirstChild("Highlight") and not playertoggle then
-			character.Highlight:remove()
-		end
-		if Value and not character:findFirstChild("Highlight") then
-			local a = Instance.new("Highlight", character)
-			a.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
-			a.FillColor = Color3.fromRGB(0,255,0) -- avoid display bugs as soon as loads :)
-			a.OutlineColor = Color3.fromRGB(127,255,127) -- avoid display bugs as soon as loads :)
-			spawn(function()
-				repeat
-					wait(0.1)
-					if player[i] == getBeast() then
-						a.FillColor = Color3.fromRGB(255,0,0)
-						a.OutlineColor = Color3.fromRGB(255,127,127)
-					else
-						a.FillColor = Color3.fromRGB(0,255,0)
-						a.OutlineColor = Color3.fromRGB(127,255,127)
-					end
-				until character == nil or a == nil
-			end)
-			end
-			end
-	end
-      end
-   end,
-})
+       function getBeast()
+           for _, plr in pairs(game.Players:GetPlayers()) do
+               if plr and plr.TempPlayerStatsModule:FindFirstChild("IsBeast") then
+                   if plr.TempPlayerStatsModule:FindFirstChild("IsBeast").Value then
+                       return plr
+                   end
+               end
+           end
+           return nil
+       end
+       local player = game.Players:GetChildren()
+       for i = 1, #player do
+           if player[i] ~= game.Players.LocalPlayer and player[i].Character ~= nil then
+               local character = player[i].Character
+               if character:FindFirstChild("Highlight") and not playertoggle then
+                   character.Highlight:Remove()
+               end
+               if Value and not character:FindFirstChild("Highlight") then
+                   local a = Instance.new("Highlight", character)
+                   a.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
+                   a.FillColor = Color3.fromRGB(0,255,0)
+                   a.OutlineColor = Color3.fromRGB(127,255,127)
+                   spawn(function()
+                       repeat
+                           wait(0.1)
+                           if player[i] == getBeast() then
+                               a.FillColor = Color3.fromRGB(255,0,0)
+                               a.OutlineColor = Color3.fromRGB(255,127,127)
+                           else
+                               a.FillColor = Color3.fromRGB(0,255,0)
+                               a.OutlineColor = Color3.fromRGB(127,255,127)
+                           end
+                       until character == nil or a == nil
+                   end)
+               end
+           end
+       end
+   end  -- ← fecha a função
+})      -- ← fecha a tabela e a chamada
 local Toggle = t3:CreateToggle({
     Name = "ESP Pod",
     CurrentValue = false,
