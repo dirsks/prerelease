@@ -1,7 +1,3 @@
-if not game then
-	print("chill bro im not patching this script, so you don't need to deobfuscate it and says the script is your")
-	return
-end
 if game.PlaceId ~= 893973440 then
 	warn("Please play FLEE THE FACILITY to the script hub work.")
 	return
