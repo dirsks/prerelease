@@ -1,4 +1,4 @@
-if game.PlaceId ~= 893973440 then
+if game.GameId ~= 372226183 then
 	warn("Please play FLEE THE FACILITY to the script hub work.")
 	return
 end
